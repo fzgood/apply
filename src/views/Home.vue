@@ -1,18 +1,32 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <img src="@/assets/ad.jpg">
+    <button class="button round bg-main text-white home-btn" @click="jumpPage('/product')">宝贝详情</button>
   </div>
 </template>
-
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
-  name: 'home',
-  components: {
-    HelloWorld
-  }
+  
 }
 </script>
+<style scoped>
+.home{
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height: 100%;
+}
+.home img{
+  width:100%;
+  height: 100%;
+  object-fit: cover;
+}
+.home-btn{
+  position: absolute;
+  bottom:50px;
+  left:50%;
+  width: 80%;
+  transform: translateX(-50%);
+}
+</style>

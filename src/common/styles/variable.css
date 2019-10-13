@@ -1,0 +1,6 @@
+html:root{
+  --mainColor: #f4be43;
+  --secondColor: #ff362e;
+  --maskColor: rgba(0,0,0, 6);
+  --borderColor: #eee;
+}
