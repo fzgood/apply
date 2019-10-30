@@ -32,19 +32,19 @@
         <div class=" flex flex-item-center apply-group">
           <div class="apply-group__name mr15">联系姓名</div>
           <div class="apply-group__value flex-item" >
-            <input type="text" placeholder="李XX">
+            <input type="text" placeholder="李XX" v-model="contact">
           </div>
         </div>
         <div class=" flex flex-item-center apply-group">
           <div class="apply-group__name mr15">联系电话</div>
           <div class="apply-group__value flex-item" >
-            <input type="text" placeholder="138XX138XXX">
+            <input type="text" placeholder="138XX138XXX" v-model="contactNo">
           </div>
         </div>
         <div class=" flex flex-item-center apply-group">
           <div class="apply-group__name mr15">收货地址</div>
           <div class="apply-group__value flex-item" >
-            <input type="text" placeholder="广东省深圳市福田区XXX街道XXX楼">
+            <input type="text" placeholder="广东省深圳市福田区XXX街道XXX楼" v-model="address">
           </div>
         </div><div class=" flex  apply-group">
           <div class="apply-group__name mr15">备注信息</div>
@@ -55,7 +55,7 @@
       </div>
     </div>
     <div class="pd15 mt15">
-      <button class="button bg-main line-main text-white round button--full ">微信在线支付</button>
+      <button class="button bg-main line-main text-white round button--full " @click="pay">微信在线支付</button>
     </div>
   </div>
 </template>
@@ -65,7 +65,11 @@ export default {
   data(){
     return {
       number: 1,
-      price: 56.78,
+      wxPay: null,
+      price: 0.01,
+      contact: '',
+      contactNo: '',
+      address:''
     }
   },
   computed: {
@@ -89,18 +93,52 @@ export default {
         this.number = 1
       }
     },
+    createOrder(){
+      return new Promise((resolve, reject)=>{
+        this.$axios.post(apiUrl+'/mp/order/createOrder', {
+          'channelNo':'1',
+          'userId':'b75d16582f0b41fc8cd993c390c26433',
+          'goodsId':'c01d92293f53477aa30a155746d3dec9',
+          'goodsPrice': this.price,
+          'goodsNum': this.number,
+          'contact': this.contact,
+          'contactNo': this.contactNo,
+          'address':this.address
+        }).then(res=>{
+          resolve(res.data)
+        })
+      })
+    },
+    pay(){
+      this.createOrder().then((res)=>{
+        this.$axios.get(apiUrl+'/mp/order/pay/'+res.msg).then(res=>{
+          const wxPayMpOrderResult = res.data.data.wxPayMpOrderResult;
+          this.wxPay = wxPayMpOrderResult;
+          this.toPay(wxPayMpOrderResult);
+        })
+      })
+    },
+    toPay(wxPay){
+      WeixinJSBridge.invoke(
+        'getBrandWCPayRequest', {
+           "appId":wxPay.appId,
+           "timeStamp":wxPay.timeStamp,
+           "nonceStr":wxPay.nonceStr,
+           "package":wxPay.packageValue,
+           "signType":wxPay.signType,
+           "paySign":wxPay.paySign,
+        },
+        function(res){
+          if(res.err_msg == "get_brand_wcpay_request:ok" ){
+          // 使用以上方式判断前端返回,微信团队郑重提示：
+                //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+          }
+        }
+      );
+    }
   },
   created(){
-    this.$axios.post(apiUrl+'/mp/order/createOrder', {
-      'channelNo':'1',
-      'userId':'1',
-      'goodsId':'1',
-      'goodsPrice': 0.01,
-      'goodsNum': 10,
-      'contact': 'fz',
-      'contactNo': '13246765751',
-      'address':'广东省深圳市莲花山公园'
-    })
+
   }
 }
 </script>
