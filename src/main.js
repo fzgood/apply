@@ -2,9 +2,13 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import axios from 'axios'
+
 import './common/styles/theme.css'
 
 Vue.config.productionTip = false
+Vue.prototype.$axios = axios;
+
 
 router.beforeEach((to, from, next) => {//beforeEach是router的钩子函数，在进入路由前执行
   store.commit('updatePageNav', to.meta.pageNav)

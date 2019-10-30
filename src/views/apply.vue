@@ -12,13 +12,13 @@
           <div class="apply-product__name">16#滑轮 BW235</div>
           <div class="mt5 apply-product__intro">门滑轮-地滑轮-15MM 轮子-单论 长93CM高22CM宽15CM</div>
           <div class="mt10 flex flex-item-center">
-            <div class="flex-item apply-product__price">￥{{price}}</div>  
+            <div class="flex-item apply-product__price">￥{{price}}</div>
             <div class="flex flex-item-center number">
               <div class="number-jisuan number-jian" @click="bindJian"></div>
               <input class="flex-item text-center" type="text" v-model="number" @input="bindInput">
               <div class="number-jisuan number-jia" @click="bindJia"></div>
-            </div> 
-          </div> 
+            </div>
+          </div>
         </div>
       </div>
       <div class="pd15 bg-white flex flex-item-center apply-total">
@@ -55,8 +55,8 @@
       </div>
     </div>
     <div class="pd15 mt15">
-      <button class="button bg-main line-main text-white round button--full ">微信在线支付</button>  
-    </div> 
+      <button class="button bg-main line-main text-white round button--full ">微信在线支付</button>
+    </div>
   </div>
 </template>
 <script>
@@ -89,6 +89,18 @@ export default {
         this.number = 1
       }
     },
+  },
+  created(){
+    this.$axios.post(apiUrl+'/mp/order/createOrder', {
+      'channelNo':'1',
+      'userId':'1',
+      'goodsId':'1',
+      'goodsPrice': 0.01,
+      'goodsNum': 10,
+      'contact': 'fz',
+      'contactNo': '13246765751',
+      'address':'广东省深圳市莲花山公园'
+    })
   }
 }
 </script>
