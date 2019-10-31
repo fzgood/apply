@@ -19,10 +19,10 @@
       </div>
       <div class="mt15  bg-white detail-section">
         <div class="pd15 detail-section__hd">
-          <div class="detail-section__title">宝贝详情</div>          
+          <div class="detail-section__title">宝贝详情</div>
         </div>
         <div class=" detail-section__content">
-          <img src="@/assets/detail.jpg" />          
+          <img src="@/assets/detail.jpg" />
         </div>
       </div>
     </div>
@@ -33,7 +33,7 @@
       </div>
       <!-- <div class=" bg-second text-white line-main detail-ft__btn">加入购物车</div> -->
       <div class=" bg-main text-white line-main detail-ft__btn" @click="jumpPage('/apply')">立即购买</div>
-      
+
     </div>
   </div>
 </template>
@@ -42,7 +42,20 @@
 
 export default {
   name: 'home',
+  data(){
+    return{
+      detail: {}
+    }
+  },
+  methods:{
+    getDetail(){
+      this.$axios.get('http://dae.okeyone.cn/mp/goods/1').then(res=>{
+        console.log(res);
+      })
+    }
+  },
   created(){
+    this.getDetail();
   }
 }
 </script>

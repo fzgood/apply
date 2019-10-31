@@ -1,12 +1,22 @@
 <template>
   <div class="home">
-    <img src="@/assets/ad.jpg">
-    <button class="button round bg-main text-white home-btn" @click="jumpPage('/product')">宝贝详情</button>
+    <img src="@/assets/ad.jpg" @click="sq">
   </div>
 </template>
 <script>
 export default {
-
+  methods: {
+    sq(){
+      const appid = 'wx537a4753b9647736';
+      const redirect_uri = encodeURIComponent('http://dae.okeyone.cn/pay/product');
+      const response_type = 'code';
+      const scope = 'snsapi_base'
+      const url=`https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=${response_type}&scope=${scope}&state=1#wechat_redirect`;
+      location.href = url;
+    }
+  },
+  created(){
+  }
 }
 </script>
 <style scoped>
@@ -16,11 +26,12 @@ export default {
   left:0;
   width:100%;
   height: 100%;
+  background-image: linear-gradient(to bottom, #0c0b10, #16151b);
 }
 .home img{
   width:100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .home-btn{
   position: absolute;

@@ -97,7 +97,7 @@ export default {
       return new Promise((resolve, reject)=>{
         this.$axios.post(apiUrl+'/mp/order/createOrder', {
           'channelNo':'1',
-          'userId':'b75d16582f0b41fc8cd993c390c26433',
+          'userId':'2a7c8f05a92e448b95eee97cb3b2e65c',
           'goodsId':'c01d92293f53477aa30a155746d3dec9',
           'goodsPrice': this.price,
           'goodsNum': this.number,
