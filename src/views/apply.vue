@@ -9,7 +9,7 @@
           </div>
         </div>
         <div class="flex-item">
-          <div class="apply-product__name">16#滑轮 BW235</div>
+          <div class="apply-product__name" v-text="detail.goodsName"></div>
           <div class="mt5 apply-product__intro">门滑轮-地滑轮-15MM 轮子-单论 长93CM高22CM宽15CM</div>
           <div class="mt10 flex flex-item-center">
             <div class="flex-item apply-product__price">￥{{price}}</div>
@@ -69,7 +69,8 @@ export default {
       price: 0.01,
       contact: '',
       contactNo: '',
-      address:''
+      address:'',
+      detail: {}
     }
   },
   computed: {
@@ -93,12 +94,22 @@ export default {
         this.number = 1
       }
     },
+    getDetail(){
+      this.$axios.get('http://dae.okeyone.cn/mp/goods/1').then(res=>{
+        if(res.data.code == 0){
+          const detail = res.data.data.goods;
+          this.detail = detail;
+          this.price = detail.salePrice
+        }
+      })
+    },
     createOrder(){
+      const openId = localStorage.getItem('openId');
       return new Promise((resolve, reject)=>{
         this.$axios.post(apiUrl+'/mp/order/createOrder', {
           'channelNo':'1',
-          'userId':'2a7c8f05a92e448b95eee97cb3b2e65c',
-          'goodsId':'c01d92293f53477aa30a155746d3dec9',
+          'openId': openId,
+          'goodsId':this.detail.goodsId,
           'goodsPrice': this.price,
           'goodsNum': this.number,
           'contact': this.contact,
@@ -110,6 +121,15 @@ export default {
       })
     },
     pay(){
+      const obj = this.checkInfo();
+      if(!obj.flag){
+        weui.toast(obj.msg, {
+          duration: 1500,
+          className: 'custom-classname',
+          callback: function(){ console.log('close') }
+        });
+        return
+      }
       this.createOrder().then((res)=>{
         this.$axios.get(apiUrl+'/mp/order/pay/'+res.msg).then(res=>{
           const wxPayMpOrderResult = res.data.data.wxPayMpOrderResult;
@@ -117,6 +137,29 @@ export default {
           this.toPay(wxPayMpOrderResult);
         })
       })
+    },
+    checkInfo(){
+      var obj = {
+        flag: true,
+        msg: "ok"
+      }
+      if(!this.contact){
+        return {
+          flag: false,
+          msg: '请填写联系姓名'
+        }
+      }else if(!this.contactNo){
+        return {
+          flag: false,
+          msg: '请填写联系电话'
+        }
+      }else if(!this.address){
+        return {
+          flag: false,
+          msg: '请填写收获地址'
+        }
+      }
+      return obj;
     },
     toPay(wxPay){
       WeixinJSBridge.invoke(
@@ -138,11 +181,11 @@ export default {
     }
   },
   created(){
-
+    this.getDetail();
   }
 }
 </script>
-<style scoped>
+<style>
 .apply{
   height: 100%;
 }
@@ -214,5 +257,16 @@ export default {
 }
 .number-jian::before{
   display: none;
+}
+.custom-classname .weui-toast{
+  width: auto;
+  min-height: auto;
+}
+.custom-classname .weui-icon_toast{
+  display: none;
+}
+.custom-classname .weui-toast__content{
+  margin: 0;
+  padding: 10px;
 }
 </style>

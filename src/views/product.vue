@@ -2,12 +2,12 @@
   <div class="flex flex-column detail">
     <div class="flex-item detail-main">
       <div class="detail-loop">
-        <img  src="@/assets/product.jpg">
+        <img  :src="detail.goodsCover">
       </div>
       <div class="pd15 bg-white detail-info">
         <div class="flex flex-item-center">
           <div class="flex-item">
-            <div class="detail-title">16#滑轮 BW235</div>
+            <div class="detail-title" v-text="detail.goodsName"></div>
             <div class="mt10 flex detail-intro">
               <div class="mr20">上架：3天前</div>
               <div >浏览人数：2488</div>
@@ -15,21 +15,20 @@
           </div>
           <div class="ml20 detail-share iconfont icon-forwardfill"></div>
         </div>
-        <div class="mt10 detail-price">56.78</div>
+        <div class="mt10 detail-price" v-text="detail.salePrice"></div>
       </div>
       <div class="mt15  bg-white detail-section">
         <div class="pd15 detail-section__hd">
           <div class="detail-section__title">宝贝详情</div>
         </div>
-        <div class=" detail-section__content">
-          <img src="@/assets/detail.jpg" />
+        <div class="pd15 detail-section__content" v-text="detail.goodsDetail">
         </div>
       </div>
     </div>
     <div class=" detail-ft bg-white flex flex-item-center">
       <div class="flex-item detail-ft__box pl15">
-        <div class="detail-ft__price">56.78</div>
-        <div class="detail-ft__number">已售788件</div>
+        <div class="detail-ft__price" v-text="detail.salePrice"></div>
+        <div class="detail-ft__number">已售{{detail.payNum}}件</div>
       </div>
       <!-- <div class=" bg-second text-white line-main detail-ft__btn">加入购物车</div> -->
       <div class=" bg-main text-white line-main detail-ft__btn" @click="jumpPage('/apply')">立即购买</div>
@@ -50,7 +49,11 @@ export default {
   methods:{
     getDetail(){
       this.$axios.get('http://dae.okeyone.cn/mp/goods/1').then(res=>{
-        console.log(res);
+        if(res.data.code == 0){
+          const detail = res.data.data.goods;
+          this.detail = detail;
+          console.log(this);
+        }
       })
     }
   },

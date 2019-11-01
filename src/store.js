@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     pageTitle: '商品',
     pageNav: '',
-    historyLength: 0
+    historyLength: 0,
   },
   mutations: {
     updatePageTitle (state, data) {
