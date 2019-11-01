@@ -27,10 +27,14 @@ export default {
       if (r != null) return unescape(r[2]); return null;
     },
     setOpenId(callback){
-      localStorage.setItem('openId', '');
-      setTimeout(()=>{
-        callback && callback();
-      }, 5000)
+      this.$axios.get(`${apiUrl}/mp/user/${this.code}`).then(res=>{
+        if(res.data.code == 0){
+          const data = res.data.data;
+          localStorage.setItem('openId', data.openid);
+          localStorage.setItem('token', data.accessToken);
+          callback && callback();
+        }
+      })
     }
   },
   created(){

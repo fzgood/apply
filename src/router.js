@@ -30,6 +30,14 @@ export default new Router({
         pageTitle: "商品购买"
       },
       component: () => import(/* webpackChunkName: "about" */ './views/apply.vue')
+    },{
+      path: '/success',
+      name: 'success',
+      meta: {
+        pageTitle: "购买成功",
+        pageNav: "custom"
+      },
+      component: () => import(/* webpackChunkName: "about" */ './views/success.vue')
     }
   ]
 })

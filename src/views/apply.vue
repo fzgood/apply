@@ -95,7 +95,7 @@ export default {
       }
     },
     getDetail(){
-      this.$axios.get('http://dae.okeyone.cn/mp/goods/1').then(res=>{
+      this.$axios.get(apiUrl+'/mp/goods/1').then(res=>{
         if(res.data.code == 0){
           const detail = res.data.data.goods;
           this.detail = detail;
