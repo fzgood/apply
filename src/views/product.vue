@@ -10,7 +10,7 @@
             <div class="detail-title" v-text="detail.goodsName"></div>
             <div class="mt10 flex detail-intro">
               <div class="mr20">上架：3天前</div>
-              <div >浏览人数：2488</div>
+              <div >浏览人数：{{detail.showNum}}</div>
             </div>
           </div>
           <div class="ml20 detail-share iconfont icon-forwardfill"></div>

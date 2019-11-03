@@ -32,28 +32,29 @@
         <div class=" flex flex-item-center apply-group">
           <div class="apply-group__name mr15">联系姓名</div>
           <div class="apply-group__value flex-item" >
-            <input type="text" placeholder="李XX" v-model="contact">
+            <input type="text" placeholder="请填写联系姓名" v-model="contact">
           </div>
         </div>
         <div class=" flex flex-item-center apply-group">
           <div class="apply-group__name mr15">联系电话</div>
           <div class="apply-group__value flex-item" >
-            <input type="text" placeholder="138XX138XXX" v-model="contactNo">
+            <input type="text" placeholder="请填写联系电话" v-model="contactNo">
           </div>
         </div>
         <div class=" flex flex-item-center apply-group">
           <div class="apply-group__name mr15">收货地址</div>
           <div class="apply-group__value flex-item" >
-            <input type="text" placeholder="广东省深圳市福田区XXX街道XXX楼" v-model="address">
+            <input type="text" placeholder="请填写收货地址" v-model="address">
           </div>
         </div><div class=" flex  apply-group">
           <div class="apply-group__name mr15">备注信息</div>
           <div class="apply-group__value flex-item" >
-            <textarea placeholder="易碎品，轻拿轻放"></textarea>
+            <textarea placeholder="备注信息"></textarea>
           </div>
         </div>
       </div>
     </div>
+    <div>{{msg}}</div>
     <div class="pd15 mt15">
       <button class="button bg-main line-main text-white round button--full " @click="pay">微信在线支付</button>
     </div>
@@ -70,7 +71,8 @@ export default {
       contact: '',
       contactNo: '',
       address:'',
-      detail: {}
+      detail: {},
+      msg: ''
     }
   },
   computed: {
@@ -171,8 +173,10 @@ export default {
            "signType":wxPay.signType,
            "paySign":wxPay.paySign,
         },
-        function(res){
-          if(res.err_msg == "get_brand_wcpay_request:ok" ){
+        (res)=>{
+          this.msg = res.errMsg;
+          if(res.errMsg == "get_brand_wcpay_request:ok" ){
+            this.jumpPage('/success');
           // 使用以上方式判断前端返回,微信团队郑重提示：
                 //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
           }
