@@ -23,6 +23,9 @@ router.beforeEach((to, from, next) => {//beforeEach是router的钩子函数，�
   if(to.path != '/' && !localStorage.getItem('openId')){
     location.replace(`/pay/?shopNo=${to.query.id}`);
   }
+  if (to.meta.pageTitle) {
+      document.title = to.meta.pageTitle
+  }
   next()//执行进入路由，如果不写就不会进入目标页
 
 })

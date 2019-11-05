@@ -10,7 +10,7 @@
         </div>
         <div class="flex-item">
           <div class="apply-product__name" v-text="detail.goodsName"></div>
-          <div class="mt5 apply-product__intro">门滑轮-地滑轮-15MM 轮子-单论 长93CM高22CM宽15CM</div>
+          <div class="mt5 apply-product__intro" v-text="detail.goodsDetail"></div>
           <div class="mt10 flex flex-item-center">
             <div class="flex-item apply-product__price">￥{{price}}</div>
             <div class="flex flex-item-center number">
@@ -107,6 +107,7 @@ export default {
     },
     createOrder(){
       const openId = localStorage.getItem('openId');
+      const accessToken = localStorage.getItem('accessToken');
       return new Promise((resolve, reject)=>{
         if(this.orderId){
           resolve(this.orderId);
@@ -119,7 +120,8 @@ export default {
             'goodsNum': this.number,
             'contact': this.contact,
             'contactNo': this.contactNo,
-            'address':this.address
+            'address':this.address,
+            'accessToken': accessToken
           }).then(res=>{
             if(res.data.code == 0){
               this.orderId = res.data.msg;
