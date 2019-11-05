@@ -5,10 +5,9 @@
 </template>
 <script>
 const appid = 'wx537a4753b9647736';
-const redirect_uri = encodeURIComponent('http://dae.okeyone.cn/pay/');
 const response_type = 'code';
 const scope = 'snsapi_base'
-
+let shopNo = '';
 export default {
   data(){
     return {
@@ -17,6 +16,7 @@ export default {
   },
   methods: {
     sq(){
+      const redirect_uri = encodeURIComponent(`${apiUrl}/pay/?shopNo=${shopNo}`);
       const url=`https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=${response_type}&scope=${scope}&state=1#wechat_redirect`;
       location.href = url;
     },
@@ -39,11 +39,15 @@ export default {
   },
   created(){
     this.code = this.getQueryString('code');
+    shopNo = this.getQueryString('shopNo') || 1;
+    console.log(shopNo);
     if(this.code){
       var loading = weui.loading('loading');
       this.setOpenId(()=>{
         loading.hide();
-        this.jumpPage('/product');
+        this.jumpPage('/product', {
+          id: shopNo
+        });
       });
     }
   }

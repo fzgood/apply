@@ -5,7 +5,7 @@
       <div class="pd15 bg-white apply-section__box flex flex-item-top apply-product">
         <div class="apply-product__thumbnail mr10">
           <div class="goods-thumbnail">
-            <img src="@/assets/product.jpg" />
+            <img :src="detail.goodsCover" />
           </div>
         </div>
         <div class="flex-item">
@@ -54,7 +54,6 @@
         </div>
       </div>
     </div>
-    <div>{{msg}}</div>
     <div class="pd15 mt15">
       <button class="button bg-main line-main text-white round button--full " @click="pay">微信在线支付</button>
     </div>
@@ -65,6 +64,7 @@ export default {
   name: 'apply',
   data(){
     return {
+      id: '',
       number: 1,
       wxPay: null,
       price: 0.01,
@@ -72,7 +72,7 @@ export default {
       contactNo: '',
       address:'',
       detail: {},
-      msg: ''
+      orderId: ''
     }
   },
   computed: {
@@ -97,7 +97,7 @@ export default {
       }
     },
     getDetail(){
-      this.$axios.get(apiUrl+'/mp/goods/1').then(res=>{
+      this.$axios.get(`${apiUrl}/mp/goods/${this.id}`).then(res=>{
         if(res.data.code == 0){
           const detail = res.data.data.goods;
           this.detail = detail;
@@ -108,18 +108,25 @@ export default {
     createOrder(){
       const openId = localStorage.getItem('openId');
       return new Promise((resolve, reject)=>{
-        this.$axios.post(apiUrl+'/mp/order/createOrder', {
-          'channelNo':'1',
-          'openId': openId,
-          'goodsId':this.detail.goodsId,
-          'goodsPrice': this.price,
-          'goodsNum': this.number,
-          'contact': this.contact,
-          'contactNo': this.contactNo,
-          'address':this.address
-        }).then(res=>{
-          resolve(res.data)
-        })
+        if(this.orderId){
+          resolve(this.orderId);
+        }else{
+          this.$axios.post(apiUrl+'/mp/order/createOrder', {
+            'channelNo':this.id,
+            'openId': openId,
+            'goodsId':this.detail.goodsId,
+            'goodsPrice': this.price,
+            'goodsNum': this.number,
+            'contact': this.contact,
+            'contactNo': this.contactNo,
+            'address':this.address
+          }).then(res=>{
+            if(res.data.code == 0){
+              this.orderId = res.data.msg;
+              resolve(this.orderId)
+            }
+          })
+        }
       })
     },
     pay(){
@@ -132,8 +139,8 @@ export default {
         });
         return
       }
-      this.createOrder().then((res)=>{
-        this.$axios.get(apiUrl+'/mp/order/pay/'+res.msg).then(res=>{
+      this.createOrder().then((orderId)=>{
+        this.$axios.get(apiUrl+'/mp/order/pay/'+orderId).then(res=>{
           const wxPayMpOrderResult = res.data.data.wxPayMpOrderResult;
           this.wxPay = wxPayMpOrderResult;
           this.toPay(wxPayMpOrderResult);
@@ -164,6 +171,7 @@ export default {
       return obj;
     },
     toPay(wxPay){
+      var self = this;
       WeixinJSBridge.invoke(
         'getBrandWCPayRequest', {
            "appId":wxPay.appId,
@@ -174,17 +182,20 @@ export default {
            "paySign":wxPay.paySign,
         },
         (res)=>{
-          this.msg = res.errMsg;
-          if(res.errMsg == "get_brand_wcpay_request:ok" ){
-            this.jumpPage('/success');
-          // 使用以上方式判断前端返回,微信团队郑重提示：
-                //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-          }
+          self.getApplyResult();
         }
       );
+    },
+    getApplyResult(){
+      this.$axios.get(`${apiUrl}/mp/order/statusOrder/${this.orderId}`).then(res=>{
+        if(res.data.code == 0){
+          this.jumpPage('/success');
+        }
+      });
     }
   },
   created(){
+    this.id = this.$route.query.id;
     this.getDetail();
   }
 }
