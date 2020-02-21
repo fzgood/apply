@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-const appid = 'wx537a4753b9647736';
+const appid = 'wxe953f91a0805a523';
 const response_type = 'code';
 const scope = 'snsapi_base'
 let shopNo = '';
